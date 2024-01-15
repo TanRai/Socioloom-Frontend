@@ -5,6 +5,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PublishIcon from "@mui/icons-material/Publish";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import { RefCallback } from "react";
 
 interface Props {
   displayName: string;

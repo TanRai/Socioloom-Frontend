@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound";
 import LogReg from "./pages/LogReg";
 import "./App.css";
 import { createContext, useEffect, useState } from "react";
+import Test from "./Components/Test";
 
 export const LoggedContext = createContext(() => {});
 
@@ -35,6 +36,7 @@ function App() {
               element={<Home urlPath="notifications" />}
             />
             <Route path="/bookmarks" element={<Home urlPath="bookmarks" />} />
+            <Route path="/test" element={<Test />} />
             <Route path="*" element={<NotFound />} />
           </>
         ) : (
