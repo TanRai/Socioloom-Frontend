@@ -6,11 +6,10 @@
   padding-right: 20px;
 }
 
-.sidebar__twitterIcon{
-  font-size: 30px !important;
-  color: var(--twitter-color) !important;
-  margin-left: 20px !important;
-  margin-bottom: 20px !important;
+.sidebar__socioloomIcon{
+  width: 32px;
+  height: 32px;
+  margin: 24px;
 }
 
 .sidebar__logout{

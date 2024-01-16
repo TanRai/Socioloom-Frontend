@@ -7,7 +7,7 @@ function Widgets() {
     <div className="widgets">
       <div className="widgets__input">
         <SearchIcon className="widgets__searchIcon" />
-        <input placeholder="Search Twitter" type="text" />
+        <input placeholder="Search Socioloom" type="text" />
       </div>
       <div className="widgets__interests">
         <div className="widgets__interests__header">Interests</div>

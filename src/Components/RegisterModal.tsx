@@ -1,5 +1,5 @@
 import { IoMdClose } from "react-icons/io";
-import "./Modal.css";
+import "./RegisterModal.css";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

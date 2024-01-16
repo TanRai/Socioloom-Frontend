@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { set } from 'react-hook-form';
 
 function useLoadPosts(pageNumber: number) {
+  const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
@@ -18,16 +18,22 @@ function useLoadPosts(pageNumber: number) {
     setLoading(true);
     setError(false);
     const cancelTokenSource = axios.CancelToken.source();
-    axios.get(`https://jsonplaceholder.typicode.com/posts?_page=${pageNumber}&_limit=10`, {
+    axios.get(`http://localhost:3000/api/posts/`, {
       cancelToken: cancelTokenSource.token,
+      headers: {
+        "x-auth-token": token,
+      },
+      params: {
+        "pageNumber": pageNumber,
+      },
     })
       .then((res) => {
+        console.log("RESPONSE HEADER", res.headers);
         setPosts((prevPosts) => {
           return [...new Set([...prevPosts, ...res.data])];
         });
-        setHasMore(true); // res.data.length > 0 , Something like this
+        setHasMore(res.data.length > 0);
         setLoading(false);
-        console.log(res.data);
       })
       .catch((error) => {
         if (axios.isCancel(error)) {

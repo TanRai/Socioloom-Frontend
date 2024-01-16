@@ -8,7 +8,7 @@ interface Props {
 function interestOption({ follow, name }: Props) {
   return (
     <div className="interestOption">
-      <div className="interestOption__name">Politics</div>
+      <div className="interestOption__name">{name}</div>
       <button
         className={
           follow ? "interestOption__button__followed" : "interestOption__button"

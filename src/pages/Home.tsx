@@ -10,7 +10,6 @@ import Messages from "../Components/Messages";
 import Chat from "../Components/Chat";
 import PostView from "../Components/PostView";
 import Notifications from "../Components/Notifications";
-import Bookmarks from "../Components/Bookmarks";
 
 export const PathContext = createContext((path: string) => {});
 
@@ -40,8 +39,6 @@ function Home({ urlPath }: Props) {
       setPath("chat");
     } else if (location.pathname === "/notifications") {
       setPath("notifications");
-    } else if (location.pathname === "/bookmarks") {
-      setPath("bookmarks");
     }
   }, [location]);
 
@@ -61,7 +58,6 @@ function Home({ urlPath }: Props) {
         {path === "messages" && <Messages />}
         {path === "chat" && <Chat />}
         {path === "notifications" && <Notifications />}
-        {path === "bookmarks" && <Bookmarks />}
         <Widgets />
       </div>
     </PathContext.Provider>

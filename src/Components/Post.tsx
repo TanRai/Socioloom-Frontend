@@ -1,23 +1,52 @@
 import "./Post.css";
 import { Avatar } from "@mui/material";
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import PublishIcon from "@mui/icons-material/Publish";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { RefCallback } from "react";
+import moment from "moment";
+moment.updateLocale("en", {
+  relativeTime: {
+    future: "in %s",
+    past: "%s",
+    s: "%ds",
+    m: "%dm",
+    mm: "%dm",
+    h: "%dh",
+    hh: "%dh",
+    d: "%dd",
+    dd: "%dd",
+    M: "%dm",
+    MM: "%dm",
+    y: "%dy",
+    yy: "%dy",
+  },
+});
 
 interface Props {
   displayName: string;
   username: string;
-  verified?: boolean;
-  timestamp?: string;
+  timestamp: string;
   text: string;
   image?: string;
   avatar?: string;
+  likeCount: number;
+  liked: boolean;
+  replyCount: number;
 }
 
-function Post({ displayName, username, text }: Props) {
+function Post({
+  displayName,
+  username,
+  text,
+  timestamp,
+  liked,
+  likeCount,
+  replyCount,
+  image,
+}: Props) {
+  const dateTimeAgo = moment(timestamp).fromNow();
   return (
     <div className="post">
       <div className="post__avatar">
@@ -29,8 +58,8 @@ function Post({ displayName, username, text }: Props) {
             <h3>
               {displayName}{" "}
               <span className="post__headerSpecial">
-                {/* <VerifiedUserIcon className="post__badge" />  */}@{username}{" "}
-                &#183; <span className="post__headerTime">48m</span>
+                @{username} &#183;{" "}
+                <span className="post__headerTime">{dateTimeAgo}</span>
               </span>
             </h3>
           </div>
@@ -38,15 +67,25 @@ function Post({ displayName, username, text }: Props) {
             <p>{text}</p>
           </div>
         </div>
-        <img
-          src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif"
-          alt=""
-        />
+        {image && <img src={`data:image/png;base64,${image}`} alt="" />}
         <div className="post__footer">
-          <ChatBubbleOutlineIcon fontSize="small" />
-          <FavoriteBorderIcon fontSize="small" />
-          <BookmarkBorderIcon fontSize="small" />
-          <PublishIcon fontSize="small" />
+          <div className="post__footer__icon">
+            <ChatBubbleOutlineIcon fontSize="small" />
+            {replyCount > 0 ? <span>{replyCount}</span> : null}
+          </div>
+          {liked ? (
+            <div className="post__footer__icon">
+              <FavoriteIcon fontSize="small" />
+              {likeCount > 0 ? <span>{likeCount}</span> : null}
+            </div>
+          ) : (
+            <div className="post__footer__icon">
+              <FavoriteBorderIcon fontSize="small" />
+            </div>
+          )}
+          <div className="post__footer__icon">
+            <PublishIcon fontSize="small" />
+          </div>
         </div>
       </div>
     </div>

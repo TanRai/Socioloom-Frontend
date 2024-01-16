@@ -45,3 +45,10 @@
 .post__avatar{
   padding: 12px 12px 0px 16px;
 }
+
+.post__footer__icon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 2px;
+}

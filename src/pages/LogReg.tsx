@@ -1,6 +1,6 @@
 import { FieldValues, useForm } from "react-hook-form";
 import "./LogReg.css";
-import Modal from "../Components/Modal";
+import Modal from "../Components/RegisterModal";
 import { useContext, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,8 +55,7 @@ function LogReg() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
+    formState: { errors },
     setError,
   } = useForm<FormData>({
     resolver: zodResolver(schema),

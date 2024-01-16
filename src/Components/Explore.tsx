@@ -1,4 +1,3 @@
-import React from "react";
 import "./Explore.css";
 import SearchIcon from "@mui/icons-material/Search";
 import Post from "./Post";
@@ -9,7 +8,7 @@ function Explore() {
       <div className="explore__header">
         <div className="explore__input">
           <SearchIcon className="explore__searchIcon" />
-          <input placeholder="Search Twitter" type="text" />
+          <input placeholder="Search Socioloom" type="text" />
         </div>
       </div>
       <Post

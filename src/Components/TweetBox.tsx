@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "./CircularProgress";
 import { FieldValues, set, useForm } from "react-hook-form";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function TweetBox() {
   const [currentImage, setCurrentImage] = useState<File>();
@@ -21,6 +22,11 @@ function TweetBox() {
     const selectedFiles = event.target.files as FileList;
     setCurrentImage(selectedFiles?.[0]);
     setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
+  };
+  const navigate = useNavigate();
+
+  const refreshPage = () => {
+    navigate(0);
   };
 
   const submitForm = (data: FieldValues) => {
@@ -41,6 +47,9 @@ function TweetBox() {
         headers: {
           "x-auth-token": token,
         },
+        params: {
+          PostType: "Personal",
+        },
       })
       .then((res) => {
         console.log(res);
@@ -50,6 +59,7 @@ function TweetBox() {
         setPercent(0);
         setIsValid(false);
         reset();
+        refreshPage();
       });
   };
   console.log(isSubmitting || (!isValid && previewImage === ""));

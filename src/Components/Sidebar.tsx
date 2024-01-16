@@ -1,26 +1,22 @@
 import "./Sidebar.css";
 import SidebarOption from "./SidebarOption";
-import { FaTwitter } from "react-icons/fa";
 import { IoMdHome } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { IoMail } from "react-icons/io5";
-import { FaRegBookmark } from "react-icons/fa6";
 import { MdOutlinePermIdentity } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { LoggedContext } from "../App";
 import LogoutIcon from "@mui/icons-material/Logout";
+import socioloom from "../assets/fiber.png";
 
 function Sidebar() {
   const naviagte = useNavigate();
   const logOut = useContext(LoggedContext);
   return (
     <div className="sidebar">
-      <div className="sidebar__twitterIcon">
-        <FaTwitter />
-      </div>
-
+      <img className="sidebar__socioloomIcon" src={socioloom} />
       <SidebarOption active={false} text="Home" Icon={IoMdHome}></SidebarOption>
       <SidebarOption
         active={false}
@@ -36,11 +32,6 @@ function Sidebar() {
         active={false}
         text="Messages"
         Icon={IoMail}
-      ></SidebarOption>
-      <SidebarOption
-        active={false}
-        text="Bookmarks"
-        Icon={FaRegBookmark}
       ></SidebarOption>
       <SidebarOption
         active={false}

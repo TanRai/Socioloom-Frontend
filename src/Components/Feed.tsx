@@ -29,9 +29,6 @@ function Feed() {
     },
     [loading, hasMore]
   );
-
-  let n = 0;
-
   return (
     <div className="feed">
       <div className="feed__header">
@@ -47,26 +44,33 @@ function Feed() {
       </div>
       <TweetBox />
       {posts.map((post, index) => {
-        n++;
         if (posts.length === index + 1) {
           return (
-            <div ref={lastPostElementRef}>
+            <div key={index} ref={lastPostElementRef}>
               <Post
-                username={n.toString()}
-                displayName="Tanvir Raiyan"
-                verified={true}
-                text={post.title}
+                username={post.username}
+                displayName={post.display_name}
+                text={post.post_text}
+                timestamp={post.time_posted}
+                liked={post.user_liked}
+                likeCount={post.like_count}
+                replyCount={post.reply_count}
+                image={post.post_image}
               />
             </div>
           );
         } else {
           return (
-            <div>
+            <div key={index}>
               <Post
-                username={n.toString()}
-                displayName="Tanvir Raiyan"
-                verified={true}
-                text={post.title}
+                username={post.username}
+                displayName={post.display_name}
+                text={post.post_text}
+                timestamp={post.time_posted}
+                liked={post.user_liked}
+                likeCount={post.like_count}
+                replyCount={post.reply_count}
+                image={post.post_image}
               />
             </div>
           );
