@@ -4,7 +4,7 @@ import { Avatar } from "@mui/material";
 import PhotoIcon from "@mui/icons-material/Photo";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "./CircularProgress";
-import { FieldValues, set, useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -62,7 +62,6 @@ function TweetBox() {
         refreshPage();
       });
   };
-  console.log(isSubmitting || (!isValid && previewImage === ""));
 
   return (
     <div className="tweetBox">
@@ -119,7 +118,6 @@ function TweetBox() {
               ref={myComponentRef}
               style={{ display: "none" }}
               onChange={selectImage}
-              className="tweetBox__photoInput"
               type="file"
               accept="image/*"
             />

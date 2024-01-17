@@ -56,6 +56,7 @@ function Feed() {
                 likeCount={post.like_count}
                 replyCount={post.reply_count}
                 image={post.post_image}
+                avatar={post.profile_picture}
               />
             </div>
           );
@@ -71,6 +72,7 @@ function Feed() {
                 likeCount={post.like_count}
                 replyCount={post.reply_count}
                 image={post.post_image}
+                avatar={post.profile_picture}
               />
             </div>
           );

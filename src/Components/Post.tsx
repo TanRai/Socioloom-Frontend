@@ -45,12 +45,17 @@ function Post({
   likeCount,
   replyCount,
   image,
+  avatar,
 }: Props) {
   const dateTimeAgo = moment(timestamp).fromNow();
   return (
     <div className="post">
       <div className="post__avatar">
-        <Avatar />
+        {avatar ? (
+          <Avatar src={`data:image/png;base64,${avatar}`} />
+        ) : (
+          <Avatar />
+        )}
       </div>
       <div className="post__body">
         <div className="post__header">

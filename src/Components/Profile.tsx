@@ -1,15 +1,19 @@
 import "./Profile.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import cover from "./cover.jpg";
-import profile from "./profile.jpg";
 import Post from "./Post";
 import { useEffect, useState } from "react";
 import EditProfileModal from "./EditProfileModal";
 import axios from "axios";
-
-interface Props {}
+import userPlaceholder from "../assets/user.jpg";
 
 function Profile() {
+  const [user, setUser] = useState({
+    username: "",
+    displayName: "",
+    bio: "",
+    profilePicture: "",
+    coverPicture: "",
+  });
   useEffect(() => {
     axios
       .get("http://localhost:3000/api/user", {
@@ -18,7 +22,13 @@ function Profile() {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        setUser({
+          username: res.data.username,
+          displayName: res.data.displayName,
+          bio: res.data.bio,
+          profilePicture: res.data.profilePicture,
+          coverPicture: res.data.coverPicture,
+        });
       });
   }, []);
 
@@ -30,11 +40,27 @@ function Profile() {
           <button className="profile__back__button">
             <ArrowBackIcon />
           </button>
-          <h2>Tanvir Raiyan</h2>
+          <h2>{user.displayName}</h2>
         </div>
         <div className="profile__section">
-          <img className="cover__photo" src={cover} alt="" />
-          <img className="profile__photo" src={profile} alt="" />
+          {user.coverPicture ? (
+            <img
+              className="cover__photo"
+              src={`data:image/png;base64,${user.coverPicture}`}
+              alt=""
+            />
+          ) : (
+            <div className="cover__photo__placeholder"></div>
+          )}
+          {user.profilePicture ? (
+            <img
+              className="profile__photo"
+              src={`data:image/png;base64,${user.profilePicture}`}
+              alt=""
+            />
+          ) : (
+            <img className="profile__photo" src={userPlaceholder} alt="" />
+          )}
           <button
             className="edit-profile-btn"
             onClick={() => {
@@ -45,38 +71,27 @@ function Profile() {
             Edit Profile
           </button>
           <div className="user__details">
-            <h1>John Doe</h1>
-            <p className="profile__username">@johndoe</p>
-            <p>Web Developer</p>
+            <h1>{user.displayName}</h1>
+            <p className="profile__username">@{user.username}</p>
+            <p>{user.bio}</p>
           </div>
         </div>
         <div className="profile__post__header">Posts</div>
         <Post
           displayName="Tanvir Raiyan"
           username="tanrai"
-          verified={true}
-          text="Hello from tanrai"
-        />
-        <Post
-          displayName="Tanvir Raiyan"
-          username="tanrai"
-          verified={true}
-          text="Hello from tanrai"
-        />
-        <Post
-          displayName="Tanvir Raiyan"
-          username="tanrai"
-          verified={true}
-          text="Hello from tanrai"
-        />
-        <Post
-          displayName="Tanvir Raiyan"
-          username="tanrai"
-          verified={true}
           text="Hello from tanrai"
         />
       </div>
-      {openEditModal && <EditProfileModal setOpenModal={setOpenEditModal} />}
+      {openEditModal && (
+        <EditProfileModal
+          bio={user.bio}
+          displayName={user.displayName}
+          coverPhoto={user.coverPicture}
+          profilePhoto={user.profilePicture}
+          setOpenModal={setOpenEditModal}
+        />
+      )}
     </>
   );
 }
