@@ -1,12 +1,26 @@
 import "./Profile.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Post from "./Post";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import EditProfileModal from "./EditProfileModal";
 import axios from "axios";
 import userPlaceholder from "../assets/user.jpg";
+import useLoadPosts from "../Hooks/useLoadPosts";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 
-function Profile() {
+interface Props {
+  profileId: number | undefined;
+}
+
+function Profile({ profileId }: Props) {
+  console.log("profileId IN PROFILE", profileId);
+  const [pageNumber, setpageNumber] = useState(1);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const { loading, error, posts, hasMore } = useLoadPosts(
+    pageNumber,
+    "personal",
+    profileId
+  );
   const [user, setUser] = useState({
     username: "",
     displayName: "",
@@ -14,9 +28,26 @@ function Profile() {
     profilePicture: "",
     coverPicture: "",
   });
+  const lastPostElementRef = useCallback(
+    (node: any) => {
+      // console.log("node", node);
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        // console.log("entries", entries);
+        if (entries[0].isIntersecting && hasMore) {
+          console.log("Visible");
+          setpageNumber((prev) => prev + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+      // console.log("node", node);
+    },
+    [loading, hasMore]
+  );
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/user", {
+      .get(`http://localhost:3000/api/user/${profileId}`, {
         headers: {
           "x-auth-token": localStorage.getItem("token"),
         },
@@ -32,7 +63,12 @@ function Profile() {
       });
   }, []);
 
-  const [openEditModal, setOpenEditModal] = useState(false);
+  const userId = localStorage.getItem("userId");
+  let isCurrentUser = false;
+  if (userId) isCurrentUser = parseInt(userId) === profileId;
+
+  const observer = useRef<IntersectionObserver | null>(null);
+
   return (
     <>
       <div className="profile">
@@ -61,15 +97,25 @@ function Profile() {
           ) : (
             <img className="profile__photo" src={userPlaceholder} alt="" />
           )}
-          <button
-            className="edit-profile-btn"
-            onClick={() => {
-              console.log("clicked");
-              setOpenEditModal(true);
-            }}
-          >
-            Edit Profile
-          </button>
+          {isCurrentUser && (
+            <button
+              className="edit-profile-btn"
+              onClick={() => {
+                console.log("clicked");
+                setOpenEditModal(true);
+              }}
+            >
+              Edit Profile
+            </button>
+          )}
+          {!isCurrentUser && (
+            <div className="profile__buttons">
+              <div className="profile__button__message">
+                <MailOutlineIcon />
+              </div>
+              <button className="profile__button__follow">Follow</button>
+            </div>
+          )}
           <div className="user__details">
             <h1>{user.displayName}</h1>
             <p className="profile__username">@{user.username}</p>
@@ -77,11 +123,37 @@ function Profile() {
           </div>
         </div>
         <div className="profile__post__header">Posts</div>
-        <Post
-          displayName="Tanvir Raiyan"
-          username="tanrai"
-          text="Hello from tanrai"
-        />
+        {posts.map((post, index) => {
+          const postComponent = (
+            <div key={index}>
+              <Post
+                username={post.username}
+                displayName={post.display_name}
+                text={post.post_text}
+                timestamp={post.time_posted}
+                liked={post.user_liked}
+                likeCount={post.like_count}
+                replyCount={post.reply_count}
+                image={post.post_image}
+                avatar={post.profile_picture}
+                profileId={post.user_id}
+                postId={post.post_id}
+              />
+            </div>
+          );
+
+          if (posts.length === index + 1) {
+            return (
+              <div key={index} ref={lastPostElementRef}>
+                {postComponent}
+              </div>
+            );
+          } else {
+            return postComponent;
+          }
+        })}
+        <div>{loading && "Loading..."}</div>
+        <div>{error && "Error"}</div>
       </div>
       {openEditModal && (
         <EditProfileModal

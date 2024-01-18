@@ -1,8 +1,5 @@
-import { useContext } from "react";
 import "./SidebarOption.css";
-import { PathContext } from "../pages/Home";
 import { useNavigate } from "react-router-dom";
-import { set } from "react-hook-form";
 
 interface Props {
   active: boolean;
@@ -11,12 +8,13 @@ interface Props {
 }
 
 function SidebarOption({ active, text, Icon }: Props) {
-  const setPath = useContext(PathContext);
-
+  const navigate = useNavigate();
   return (
     <div
       onClick={() => {
-        setPath(text.toLowerCase());
+        if (text === "Profile")
+          navigate("/profile/" + localStorage.getItem("userId"));
+        else navigate("/" + text.toLowerCase());
       }}
       className={`sidebarOption ${active && `sidebarOption--active`}`}
     >

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./TweetBox.css";
 import { Avatar } from "@mui/material";
 import PhotoIcon from "@mui/icons-material/Photo";
@@ -15,7 +15,7 @@ function TweetBox() {
   const [percent, setPercent] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
-
+  const [profilePicture, setProfilePicture] = useState("");
   const { register, handleSubmit, reset } = useForm();
 
   const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +28,8 @@ function TweetBox() {
   const refreshPage = () => {
     navigate(0);
   };
+
+  const userId = localStorage.getItem("userId");
 
   const submitForm = (data: FieldValues) => {
     setIsSubmitting(true);
@@ -43,7 +45,7 @@ function TweetBox() {
       console.log(pair[0] + ", " + pair[1]);
     }
     axios
-      .post("http://localhost:3000/api/posts", formData, {
+      .post("http://localhost:3000/api/posts/personal", formData, {
         headers: {
           "x-auth-token": token,
         },
@@ -63,11 +65,27 @@ function TweetBox() {
       });
   };
 
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/api/user/${userId}`, {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setProfilePicture(res.data.profilePicture);
+      });
+  }, []);
+
   return (
     <div className="tweetBox">
       <form action="" onSubmit={handleSubmit(submitForm)}>
         <div className="tweetBox__input">
-          <Avatar />
+          {profilePicture ? (
+            <Avatar src={`data:image/png;base64,${profilePicture}`} />
+          ) : (
+            <Avatar />
+          )}
           <input
             {...register("PostText")}
             placeholder="What's happening?"

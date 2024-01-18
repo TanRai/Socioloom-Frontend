@@ -7,9 +7,10 @@ import useLoadPosts from "../Hooks/useLoadPosts";
 import { useState, useRef, useCallback } from "react";
 
 function Feed() {
+  const [feedType, setFeedType] = useState("following"); // ["personal", "interests"]
   const [pageNumber, setpageNumber] = useState(1);
 
-  const { loading, error, posts, hasMore } = useLoadPosts(pageNumber);
+  const { loading, error, posts, hasMore } = useLoadPosts(pageNumber, feedType);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastPostElementRef = useCallback(
@@ -32,50 +33,75 @@ function Feed() {
   return (
     <div className="feed">
       <div className="feed__header">
-        <button className="feed__buttons">
-          <div className="feed__buttons__text">Following</div>
+        <button
+          onClick={() => {
+            setFeedType("following");
+            setpageNumber(1);
+          }}
+          className="feed__buttons"
+        >
+          <div
+            className={
+              feedType === "following"
+                ? "feed__buttons__text__active"
+                : "feed__buttons__text"
+            }
+          >
+            Following
+          </div>
         </button>
-        <button className="feed__buttons">
-          <div className="feed__buttons__text">Interests</div>
+        <button
+          onClick={() => {
+            setFeedType("interests");
+            setpageNumber(1);
+          }}
+          className="feed__buttons"
+        >
+          <div
+            className={
+              feedType === "interests"
+                ? "feed__buttons__text__active"
+                : "feed__buttons__text"
+            }
+          >
+            Interests
+          </div>
         </button>
         <button className="feed__settings">
           <SettingsIcon className="feed__settings__icon" />
         </button>
       </div>
-      <TweetBox />
+      {feedType === "following" ? <TweetBox /> : <InterestTweetBox />}
       {posts.map((post, index) => {
+        const postComponent = (
+          <div key={index}>
+            <Post
+              username={post.username}
+              displayName={post.display_name}
+              text={post.post_text}
+              timestamp={post.time_posted}
+              liked={post.user_liked}
+              likeCount={post.like_count}
+              replyCount={post.reply_count}
+              image={post.post_image}
+              avatar={post.profile_picture}
+              profileId={post.user_id}
+              {...(feedType === "interests" && {
+                interest: post.interest_type,
+              })}
+              postId={post.post_id}
+            />
+          </div>
+        );
+
         if (posts.length === index + 1) {
           return (
             <div key={index} ref={lastPostElementRef}>
-              <Post
-                username={post.username}
-                displayName={post.display_name}
-                text={post.post_text}
-                timestamp={post.time_posted}
-                liked={post.user_liked}
-                likeCount={post.like_count}
-                replyCount={post.reply_count}
-                image={post.post_image}
-                avatar={post.profile_picture}
-              />
+              {postComponent}
             </div>
           );
         } else {
-          return (
-            <div key={index}>
-              <Post
-                username={post.username}
-                displayName={post.display_name}
-                text={post.post_text}
-                timestamp={post.time_posted}
-                liked={post.user_liked}
-                likeCount={post.like_count}
-                replyCount={post.reply_count}
-                image={post.post_image}
-                avatar={post.profile_picture}
-              />
-            </div>
-          );
+          return postComponent;
         }
       })}
       <div>{loading && "Loading..."}</div>
@@ -85,5 +111,3 @@ function Feed() {
 }
 
 export default Feed;
-
-//{index === (posts.length - 1) ? { ref: lastPostElementRef } : null}

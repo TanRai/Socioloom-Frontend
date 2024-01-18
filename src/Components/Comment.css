@@ -40,3 +40,13 @@
 .comment__avatar{
   padding: 12px 12px 0px 16px;
 }
+
+.comment__displayName{
+  color: black;
+  text-decoration: none;
+}
+
+.comment__displayName:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}

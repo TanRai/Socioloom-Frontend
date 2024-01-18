@@ -2,34 +2,27 @@ import Sidebar from "../Components/Sidebar";
 import Feed from "../Components/Feed";
 import "./Home.css";
 import Widgets from "../Components/Widgets";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Profile from "../Components/Profile";
 import Explore from "../Components/Explore";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Messages from "../Components/Messages";
 import Chat from "../Components/Chat";
 import PostView from "../Components/PostView";
 import Notifications from "../Components/Notifications";
-
-export const PathContext = createContext((path: string) => {});
 
 interface Props {
   urlPath?: string;
 }
 
 function Home({ urlPath }: Props) {
-  const navigate = useNavigate();
-
   const [path, setPath] = useState(urlPath ? urlPath : "home");
   let location = useLocation();
 
   useEffect(() => {
-    console.log("DIEEEEEE!!!!");
-    console.log("HERE = " + location.pathname);
     if (location.pathname === "/" || location.pathname === "/home") {
-      console.log("HERE TO HOME");
       setPath("home");
-    } else if (location.pathname === "/profile") {
+    } else if (location.pathname.includes("/profile")) {
       setPath("profile");
     } else if (location.pathname === "/explore") {
       setPath("explore");
@@ -39,28 +32,29 @@ function Home({ urlPath }: Props) {
       setPath("chat");
     } else if (location.pathname === "/notifications") {
       setPath("notifications");
+    } else if (location.pathname.includes("/post")) {
+      setPath("post");
     }
   }, [location]);
 
+  const getProfileId = () => {
+    let id = -1;
+    const { profileId } = useParams();
+    if (profileId) id = parseInt(profileId);
+    return id;
+  };
   return (
-    <PathContext.Provider
-      value={(path: string) => {
-        //setPath(path);
-        navigate(`/${path}`);
-      }}
-    >
-      <div className="home">
-        <Sidebar />
-        {path === "home" && <Feed />}
-        {/* {path === "home" && <PostView />} */}
-        {path === "profile" && <Profile />}
-        {path === "explore" && <Explore />}
-        {path === "messages" && <Messages />}
-        {path === "chat" && <Chat />}
-        {path === "notifications" && <Notifications />}
-        <Widgets />
-      </div>
-    </PathContext.Provider>
+    <div className="home">
+      <Sidebar />
+      {path === "home" && <Feed />}
+      {path === "profile" && <Profile profileId={getProfileId()} />}
+      {path === "explore" && <Explore />}
+      {path === "messages" && <Messages />}
+      {path === "chat" && <Chat />}
+      {path === "notifications" && <Notifications />}
+      {path === "post" && <PostView />}
+      <Widgets />
+    </div>
   );
 }
 

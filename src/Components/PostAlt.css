@@ -47,3 +47,13 @@
   font-size: 15px;
   margin-bottom: 8px;
 }
+
+.postAlt__displayname{
+  color: black;
+  text-decoration: none;
+}
+
+.postAlt__displayname:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}

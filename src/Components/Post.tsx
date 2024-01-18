@@ -4,8 +4,8 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PublishIcon from "@mui/icons-material/Publish";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import moment from "moment";
+import { Link } from "react-router-dom";
 moment.updateLocale("en", {
   relativeTime: {
     future: "in %s",
@@ -34,6 +34,9 @@ interface Props {
   likeCount: number;
   liked: boolean;
   replyCount: number;
+  interest?: string;
+  profileId: number;
+  postId: number;
 }
 
 function Post({
@@ -46,10 +49,16 @@ function Post({
   replyCount,
   image,
   avatar,
+  interest,
+  profileId,
+  postId,
 }: Props) {
   const dateTimeAgo = moment(timestamp).fromNow();
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
   return (
-    <div className="post">
+    <Link to={`/post/personal/${postId}`} className="post">
       <div className="post__avatar">
         {avatar ? (
           <Avatar src={`data:image/png;base64,${avatar}`} />
@@ -61,12 +70,19 @@ function Post({
         <div className="post__header">
           <div className="post__headerText">
             <h3>
-              {displayName}{" "}
+              <Link to={`/profile/${profileId}`} className="post__displayName">
+                {displayName}
+              </Link>{" "}
               <span className="post__headerSpecial">
                 @{username} &#183;{" "}
                 <span className="post__headerTime">{dateTimeAgo}</span>
               </span>
             </h3>
+            {interest && (
+              <div className="post__headerInterest">
+                {capitalizeFirstLetter(interest)}
+              </div>
+            )}
           </div>
           <div className="post__headerDescription">
             <p>{text}</p>
@@ -86,6 +102,7 @@ function Post({
           ) : (
             <div className="post__footer__icon">
               <FavoriteBorderIcon fontSize="small" />
+              {likeCount > 0 ? <span>{likeCount}</span> : null}
             </div>
           )}
           <div className="post__footer__icon">
@@ -93,7 +110,7 @@ function Post({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

@@ -32,8 +32,9 @@
 .feed__buttons{
   padding: 15px 20px 0px 20px;
   flex: 1;
+  display: flex;
+  justify-content: center;
   border: none;
-  border-right: 1px solid var(--twitter-background);
   background-color: white;
   cursor: pointer;
 }
@@ -42,13 +43,22 @@
 }
 
 .feed__buttons__text{
-  padding-bottom: 15px;
+  padding-bottom: 12px;
+  width: fit-content;
+}
+
+.feed__buttons__text__active{
+  padding-bottom: 12px;
+  width: fit-content;
+  border-bottom: 4px solid var(--twitter-color);
 }
 
 .feed__settings{
   border: none;
   background-color: white;
   border-radius: 40px;
+  padding: 0;
+  margin: 0px 4px 0px 0px;
 }
 
 .feed__settings__icon{

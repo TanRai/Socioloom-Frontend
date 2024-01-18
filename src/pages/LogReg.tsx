@@ -20,6 +20,7 @@ function LogReg() {
       .then((res) => {
         if (res.status === 200) {
           window.localStorage.setItem("token", res.data.token);
+          window.localStorage.setItem("userId", res.data.user.id);
           login();
           navigate("/home");
         }

@@ -28,7 +28,10 @@ function App() {
           <>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/profile" element={<Home urlPath="profile" />} />
+            <Route
+              path="/profile/:profileId"
+              element={<Home urlPath="profile" />}
+            />
             <Route path="/explore" element={<Home urlPath="explore" />} />
             <Route path="/messages" element={<Home urlPath="messages" />} />
             <Route
@@ -37,6 +40,10 @@ function App() {
             />
             <Route path="/bookmarks" element={<Home urlPath="bookmarks" />} />
             <Route path="/test" element={<Test />} />
+            <Route
+              path="/post/personal/:postId"
+              element={<Home urlPath="post" />}
+            />
             <Route path="*" element={<NotFound />} />
           </>
         ) : (

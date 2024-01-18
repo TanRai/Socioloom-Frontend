@@ -42,6 +42,7 @@ function Sidebar() {
         className="sidebar__logout"
         onClick={() => {
           localStorage.removeItem("token");
+          localStorage.removeItem("userId");
           naviagte("/");
           logOut();
         }}
