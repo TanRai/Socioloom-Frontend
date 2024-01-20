@@ -12,7 +12,11 @@ const schema = z
   .object({
     username: z
       .string()
-      .min(4, { message: "Username must be at least 4 characters" }),
+      .min(4, { message: "Username must be at least 4 characters" })
+      .regex(
+        new RegExp("^[a-zA-Z][a-zA-Z0-9]{3,}$"),
+        "Username must start with a letter and can only contain letters and numbers"
+      ),
     displayName: z
       .string()
       .min(3, { message: "Display name must be at least 3 characters" }),
@@ -22,7 +26,13 @@ const schema = z
       .min(1, { message: "Email is required" }),
     password: z
       .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
+      .min(6, { message: "Password must be at least 8 characters" })
+      .regex(
+        new RegExp(
+          "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()-__+.]){1,}).{8,}$"
+        ),
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      ),
     confirmPassword: z
       .string()
       .min(1, { message: "Confirm password is required" }),

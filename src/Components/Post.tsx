@@ -6,6 +6,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import PublishIcon from "@mui/icons-material/Publish";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 moment.updateLocale("en", {
   relativeTime: {
     future: "in %s",
@@ -53,6 +55,7 @@ function Post({
   profileId,
   postId,
 }: Props) {
+  const [likeStatus, setLikeStatus] = useState(liked ? true : false);
   const dateTimeAgo = moment(timestamp).fromNow();
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -94,17 +97,27 @@ function Post({
             <ChatBubbleOutlineIcon fontSize="small" />
             {replyCount > 0 ? <span>{replyCount}</span> : null}
           </div>
-          {liked ? (
-            <div className="post__footer__icon">
-              <FavoriteIcon fontSize="small" />
-              {likeCount > 0 ? <span>{likeCount}</span> : null}
-            </div>
-          ) : (
-            <div className="post__footer__icon">
-              <FavoriteBorderIcon fontSize="small" />
-              {likeCount > 0 ? <span>{likeCount}</span> : null}
-            </div>
-          )}
+          <div className="post__footer__info">
+            {likeStatus ? (
+              <div
+                className="post__footer__like"
+                onClick={(likeStatus) => {
+                  setLikeStatus(!likeStatus);
+                  axios.post(
+                    `http://localhost:3000/api/likes/personal/${postId}`,
+                    { likeStatus: !likeStatus }
+                  );
+                }}
+              >
+                <FavoriteIcon fontSize="small" />
+              </div>
+            ) : (
+              <div className="post__footer__like">
+                <FavoriteBorderIcon fontSize="small" />
+              </div>
+            )}
+            {likeCount > 0 ? <span>{likeCount}</span> : null}
+          </div>
           <div className="post__footer__icon">
             <PublishIcon fontSize="small" />
           </div>
