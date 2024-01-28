@@ -5,7 +5,9 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PublishIcon from "@mui/icons-material/Publish";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import axios from "axios";
 moment.updateLocale("en", {
   relativeTime: {
     future: "in %s",
@@ -53,9 +55,31 @@ function PostAlt({
   profileId,
   postId,
 }: Props) {
+  const [likeStatus, setLikeStatus] = useState(liked);
   const dateTimeAgo = moment(timestamp).fromNow();
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+  const axiosLikeLink = interest
+    ? `http://localhost:3000/api/likes/post/interests/${postId}`
+    : `http://localhost:3000/api/likes/post/personal/${postId}`;
+
+  const handleLike = (event: React.MouseEvent) => {
+    event.preventDefault();
+    axios
+      .post(
+        axiosLikeLink,
+        { like: !likeStatus },
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setLikeStatus(!likeStatus);
+      });
   };
 
   return (
@@ -75,6 +99,11 @@ function PostAlt({
             </Link>
             <div className="postAlt__headerSpecial">@{username}</div>
           </div>
+          {interest && (
+            <div className="post__headerInterest">
+              {capitalizeFirstLetter(interest)}
+            </div>
+          )}
         </div>
         <div className="postAlt__postContent">
           <p>{text}</p>
@@ -86,17 +115,19 @@ function PostAlt({
             <ChatBubbleOutlineIcon fontSize="small" />
             {replyCount > 0 ? <span>{replyCount}</span> : null}
           </div>
-          {liked ? (
-            <div className="post__footer__icon">
-              <FavoriteIcon fontSize="small" />
-              {likeCount > 0 ? <span>{likeCount}</span> : null}
+          <div className="post__footer__info">
+            <div
+              onClick={(event) => handleLike(event)}
+              className="post__footer__like"
+            >
+              {likeStatus ? (
+                <FavoriteIcon fontSize="small" />
+              ) : (
+                <FavoriteBorderIcon fontSize="small" />
+              )}
             </div>
-          ) : (
-            <div className="post__footer__icon">
-              <FavoriteBorderIcon fontSize="small" />
-              {likeCount > 0 ? <span>{likeCount}</span> : null}
-            </div>
-          )}
+            {likeCount > 0 ? <span>{likeCount}</span> : null}
+          </div>
           <div className="post__footer__icon">
             <PublishIcon fontSize="small" />
           </div>

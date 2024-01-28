@@ -13,7 +13,6 @@ interface Props {
 }
 
 function Profile({ profileId }: Props) {
-  console.log("profileId IN PROFILE", profileId);
   const [pageNumber, setpageNumber] = useState(1);
   const [openEditModal, setOpenEditModal] = useState(false);
   const { loading, error, posts, hasMore } = useLoadPosts(

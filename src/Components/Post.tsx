@@ -5,7 +5,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PublishIcon from "@mui/icons-material/Publish";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 moment.updateLocale("en", {
@@ -55,13 +55,38 @@ function Post({
   profileId,
   postId,
 }: Props) {
-  const [likeStatus, setLikeStatus] = useState(liked ? true : false);
+  const [likeStatus, setLikeStatus] = useState(liked);
   const dateTimeAgo = moment(timestamp).fromNow();
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
+  const axiosLikeLink = interest
+    ? `http://localhost:3000/api/likes/post/interests/${postId}`
+    : `http://localhost:3000/api/likes/post/personal/${postId}`;
+  const handleLike = (event: React.MouseEvent) => {
+    event.preventDefault();
+    axios
+      .post(
+        axiosLikeLink,
+        { like: !likeStatus },
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setLikeStatus(!likeStatus);
+      });
+  };
+
+  const to = interest
+    ? `/post/interests/${postId}`
+    : `/post/personal/${postId}`;
+
   return (
-    <Link to={`/post/personal/${postId}`} className="post">
+    <Link to={to} className="post">
       <div className="post__avatar">
         {avatar ? (
           <Avatar src={`data:image/png;base64,${avatar}`} />
@@ -98,24 +123,16 @@ function Post({
             {replyCount > 0 ? <span>{replyCount}</span> : null}
           </div>
           <div className="post__footer__info">
-            {likeStatus ? (
-              <div
-                className="post__footer__like"
-                onClick={(likeStatus) => {
-                  setLikeStatus(!likeStatus);
-                  axios.post(
-                    `http://localhost:3000/api/likes/personal/${postId}`,
-                    { likeStatus: !likeStatus }
-                  );
-                }}
-              >
+            <div
+              onClick={(event) => handleLike(event)}
+              className="post__footer__like"
+            >
+              {likeStatus ? (
                 <FavoriteIcon fontSize="small" />
-              </div>
-            ) : (
-              <div className="post__footer__like">
+              ) : (
                 <FavoriteBorderIcon fontSize="small" />
-              </div>
-            )}
+              )}
+            </div>
             {likeCount > 0 ? <span>{likeCount}</span> : null}
           </div>
           <div className="post__footer__icon">

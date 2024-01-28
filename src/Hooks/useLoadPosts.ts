@@ -24,8 +24,8 @@ function useLoadPosts(pageNumber: number, postType: string, userId?: number) {
         pageNumber: pageNumber,
       };
 
-  console.log("URL", url);
-  console.log("PARAMS", params);
+  // console.log("URL", url);
+  // console.log("PARAMS", params);
   useEffect(() => {
     setPosts([]);
   }, [postType]);
@@ -43,7 +43,7 @@ function useLoadPosts(pageNumber: number, postType: string, userId?: number) {
         params: params,
       })
       .then((res) => {
-        console.log("RESPONSE HEADER", res.data);
+        // console.log("RESPONSE HEADER", res.data);
         setPosts((prevPosts) => {
           return [...new Set([...prevPosts, ...res.data])];
         });
@@ -52,7 +52,7 @@ function useLoadPosts(pageNumber: number, postType: string, userId?: number) {
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
-          console.log("Request canceled:", error.message);
+          // console.log("Request canceled:", error.message);
         } else {
           setError(true);
           console.error("Error from load posts:", error.message);

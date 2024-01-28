@@ -1,9 +1,11 @@
-import "./Comment.css";
+import "./Reply.css";
 import { Avatar } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
 moment.updateLocale("en", {
   relativeTime: {
     future: "in %s",
@@ -23,6 +25,7 @@ moment.updateLocale("en", {
 });
 
 interface Props {
+  replyId: number;
   displayName: string;
   username: string;
   timestamp: string;
@@ -33,7 +36,8 @@ interface Props {
   profileId: number;
 }
 
-function Comment({
+function Reply({
+  replyId,
   displayName,
   username,
   text,
@@ -43,9 +47,30 @@ function Comment({
   avatar,
   profileId,
 }: Props) {
+  const [likeStatus, setLikeStatus] = useState(liked);
   const dateTimeAgo = moment(timestamp).fromNow();
+  let location = useLocation();
+  const axiosReplyLikeLink = location.pathname.includes("/interests")
+    ? `http://localhost:3000/api/likes/reply/interests/${replyId}`
+    : `http://localhost:3000/api/likes/reply/personal/${replyId}`;
 
-  console.log("From COMMENTS", likeCount);
+  const handleLike = (event: React.MouseEvent) => {
+    event.preventDefault();
+    axios
+      .post(
+        axiosReplyLikeLink,
+        { like: !likeStatus },
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setLikeStatus(!likeStatus);
+      });
+  };
 
   return (
     <div className="comment">
@@ -78,21 +103,23 @@ function Comment({
           </div>
         </div>
         <div className="comment__footer">
-          {liked ? (
-            <div className="post__footer__icon">
-              <FavoriteIcon fontSize="small" />
-              {likeCount > 0 ? <span>{likeCount}</span> : null}
+          <div className="post__footer__info">
+            <div
+              onClick={(event) => handleLike(event)}
+              className="post__footer__like"
+            >
+              {likeStatus ? (
+                <FavoriteIcon fontSize="small" />
+              ) : (
+                <FavoriteBorderIcon fontSize="small" />
+              )}
             </div>
-          ) : (
-            <div className="post__footer__icon">
-              <FavoriteBorderIcon fontSize="small" />
-              {likeCount > 0 ? <span>{likeCount}</span> : null}
-            </div>
-          )}
+            {likeCount > 0 ? <span>{likeCount}</span> : null}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default Comment;
+export default Reply;

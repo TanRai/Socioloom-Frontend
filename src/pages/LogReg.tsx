@@ -91,7 +91,7 @@ function LogReg() {
                     className="form-control"
                     {...register("password")}
                     placeholder="Password"
-                    type="text"
+                    type="password"
                   />
                   {errors.password && (
                     <div className="text-danger">{errors.password.message}</div>

@@ -4,7 +4,7 @@ import CircularProgress from "./CircularProgress";
 import { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Props {
   postId: number;
@@ -28,12 +28,16 @@ function ReplyBox({ postId, postType }: Props) {
         setProfilePicture(res.data.profilePicture);
       });
   }, []);
+  let location = useLocation();
+  const axiosReplyLink = location.pathname.includes("/interests")
+    ? `http://localhost:3000/api/replies/interests/${postId}`
+    : `http://localhost:3000/api/replies/personal/${postId}`;
   const userId = localStorage.getItem("userId");
   const submitForm = (data: FieldValues) => {
     setIsSubmitting(true);
 
     axios
-      .post(`http://localhost:3000/api/replies/personal/${postId}`, data, {
+      .post(axiosReplyLink, data, {
         headers: {
           "x-auth-token": localStorage.getItem("token"),
         },

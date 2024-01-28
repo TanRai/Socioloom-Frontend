@@ -57,3 +57,7 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.postAlt__headerText{
+  margin-right: 8px;
+}

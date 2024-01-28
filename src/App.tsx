@@ -44,6 +44,10 @@ function App() {
               path="/post/personal/:postId"
               element={<Home urlPath="post" />}
             />
+            <Route
+              path="/post/interests/:postId"
+              element={<Home urlPath="post" />}
+            />
             <Route path="*" element={<NotFound />} />
           </>
         ) : (
