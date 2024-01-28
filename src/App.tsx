@@ -13,6 +13,10 @@ function App() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    document.title = "Socioloom";
+  }, []);
+
+  useEffect(() => {
     if (localStorage.getItem("token")) {
       setLoggedIn(true);
     } else {
