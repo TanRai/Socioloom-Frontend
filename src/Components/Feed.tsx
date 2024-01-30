@@ -67,31 +67,29 @@ function Feed() {
             Interests
           </div>
         </button>
-        <button className="feed__settings">
+        {/* <button className="feed__settings">
           <SettingsIcon className="feed__settings__icon" />
-        </button>
+        </button> */}
       </div>
       {feedType === "following" ? <TweetBox /> : <InterestTweetBox />}
       {posts.map((post, index) => {
         const postComponent = (
-          <div key={index}>
-            <Post
-              username={post.username}
-              displayName={post.display_name}
-              text={post.post_text}
-              timestamp={post.time_posted}
-              liked={post.user_liked}
-              likeCount={post.like_count}
-              replyCount={post.reply_count}
-              image={post.post_image}
-              avatar={post.profile_picture}
-              profileId={post.user_id}
-              {...(feedType === "interests" && {
-                interest: post.interest_type,
-              })}
-              postId={post.post_id}
-            />
-          </div>
+          <Post
+            username={post.username}
+            displayName={post.display_name}
+            text={post.post_text}
+            timestamp={post.time_posted}
+            liked={post.user_liked}
+            likeCount={post.like_count}
+            replyCount={post.reply_count}
+            image={post.post_image}
+            avatar={post.profile_picture}
+            profileId={post.user_id}
+            {...(feedType === "interests" && {
+              interest: post.title,
+            })}
+            postId={post.post_id}
+          />
         );
 
         if (posts.length === index + 1) {
@@ -101,7 +99,7 @@ function Feed() {
             </div>
           );
         } else {
-          return postComponent;
+          return <div key={index}>{postComponent}</div>;
         }
       })}
       <div>{loading && "Loading..."}</div>

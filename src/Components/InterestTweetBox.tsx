@@ -16,6 +16,19 @@ function InterestTweetBox() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [profilePicture, setProfilePicture] = useState("");
+  const [interests, setInterests] = useState<any[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/interests", {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setInterests(res.data);
+      });
+  }, []);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -127,11 +140,12 @@ function InterestTweetBox() {
         )}
         <div className="interestTweetBox__footer">
           <div className="interstTweetBox__option">
-            <select id="cars" {...register("interest")}>
-              <option value="politics">Politics</option>
-              <option value="gaming">Gaming</option>
-              <option value="movies">Movies</option>
-              <option value="travel">Travel</option>
+            <select id="interest" {...register("interest")}>
+              {interests.map((interest) => (
+                <option key={interest.interest_id} value={interest.interest_id}>
+                  {interest.title}
+                </option>
+              ))}
             </select>
           </div>
           <div

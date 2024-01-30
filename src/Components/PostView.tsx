@@ -69,7 +69,7 @@ function PostView() {
           profileId={post.user_id}
           postId={post.post_id}
           {...(location.pathname.includes("/interests") && {
-            interest: post.interest_type,
+            interest: post.title,
           })}
         />
       )}

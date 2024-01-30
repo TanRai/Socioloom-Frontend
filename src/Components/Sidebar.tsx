@@ -23,11 +23,11 @@ function Sidebar() {
         text="Explore"
         Icon={IoSearch}
       ></SidebarOption>
-      <SidebarOption
+      {/* <SidebarOption
         active={false}
         text="Notifications"
         Icon={IoIosNotificationsOutline}
-      ></SidebarOption>
+      ></SidebarOption> */}
       <SidebarOption
         active={false}
         text="Messages"

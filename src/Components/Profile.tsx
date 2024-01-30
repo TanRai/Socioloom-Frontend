@@ -15,11 +15,7 @@ interface Props {
 function Profile({ profileId }: Props) {
   const [pageNumber, setpageNumber] = useState(1);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const { loading, error, posts, hasMore } = useLoadPosts(
-    pageNumber,
-    "personal",
-    profileId
-  );
+  const [follow, setFollow] = useState(false);
   const [user, setUser] = useState({
     username: "",
     displayName: "",
@@ -27,6 +23,25 @@ function Profile({ profileId }: Props) {
     profilePicture: "",
     coverPicture: "",
   });
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/api/follow/${profileId}`, {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setFollow(res.data.following);
+      });
+  }, [profileId]);
+  const { loading, error, posts, hasMore } = useLoadPosts(
+    pageNumber,
+    "personal",
+    profileId
+  );
+
+  const observer = useRef<IntersectionObserver | null>(null);
   const lastPostElementRef = useCallback(
     (node: any) => {
       // console.log("node", node);
@@ -65,8 +80,6 @@ function Profile({ profileId }: Props) {
   const userId = localStorage.getItem("userId");
   let isCurrentUser = false;
   if (userId) isCurrentUser = parseInt(userId) === profileId;
-
-  const observer = useRef<IntersectionObserver | null>(null);
 
   return (
     <>
@@ -112,7 +125,32 @@ function Profile({ profileId }: Props) {
               <div className="profile__button__message">
                 <MailOutlineIcon />
               </div>
-              <button className="profile__button__follow">Follow</button>
+              <button
+                onClick={() => {
+                  console.log("clicked IN FOLLOW");
+                  axios
+                    .post(
+                      `http://localhost:3000/api/follow/${profileId}`,
+                      { follow: !follow },
+                      {
+                        headers: {
+                          "x-auth-token": localStorage.getItem("token"),
+                        },
+                      }
+                    )
+                    .then((res) => {
+                      console.log(res);
+                      setFollow(!follow);
+                    });
+                }}
+                className={
+                  follow
+                    ? "profile__button__followed"
+                    : "profile__button__follow"
+                }
+              >
+                {follow ? "Unfollow" : "Follow"}
+              </button>
             </div>
           )}
           <div className="user__details">
