@@ -166,7 +166,7 @@ function Explore() {
               avatar={post.profile_picture}
               profileId={post.user_id}
               postId={post.post_id}
-              interest={post.interest_type}
+              interest={post.title}
             />
           );
 

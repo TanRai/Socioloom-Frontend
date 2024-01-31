@@ -28,7 +28,7 @@ function Home({ urlPath }: Props) {
       setPath("explore");
     } else if (location.pathname === "/messages") {
       setPath("messages");
-    } else if (location.pathname === "/chat") {
+    } else if (location.pathname.includes("/chat")) {
       setPath("chat");
     } else if (location.pathname === "/notifications") {
       setPath("notifications");

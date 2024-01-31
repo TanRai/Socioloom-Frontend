@@ -38,6 +38,7 @@ function App() {
             />
             <Route path="/explore" element={<Home urlPath="explore" />} />
             <Route path="/messages" element={<Home urlPath="messages" />} />
+            <Route path="/chat/:chatId" element={<Home urlPath="chat" />} />
             <Route
               path="/notifications"
               element={<Home urlPath="notifications" />}

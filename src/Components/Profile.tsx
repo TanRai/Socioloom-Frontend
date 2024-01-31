@@ -7,6 +7,7 @@ import axios from "axios";
 import userPlaceholder from "../assets/user.jpg";
 import useLoadPosts from "../Hooks/useLoadPosts";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   profileId: number | undefined;
@@ -76,6 +77,7 @@ function Profile({ profileId }: Props) {
         });
       });
   }, []);
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
   let isCurrentUser = false;
@@ -122,7 +124,25 @@ function Profile({ profileId }: Props) {
           )}
           {!isCurrentUser && (
             <div className="profile__buttons">
-              <div className="profile__button__message">
+              <div
+                onClick={() => {
+                  console.log("clicked IN MESSAGE");
+                  axios
+                    .get(
+                      `http://localhost:3000/api/chat/getChatId/${profileId}`,
+                      {
+                        headers: {
+                          "x-auth-token": localStorage.getItem("token"),
+                        },
+                      }
+                    )
+                    .then((res) => {
+                      console.log(res.data);
+                      navigate("/chat/" + res.data.chatId);
+                    });
+                }}
+                className="profile__button__message"
+              >
                 <MailOutlineIcon />
               </div>
               <button
