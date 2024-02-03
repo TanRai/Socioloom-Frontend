@@ -63,9 +63,6 @@ function InterestTweetBox() {
         headers: {
           "x-auth-token": token,
         },
-        params: {
-          PostType: "Personal",
-        },
       })
       .then((res) => {
         console.log(res);

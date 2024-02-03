@@ -49,9 +49,6 @@ function TweetBox() {
         headers: {
           "x-auth-token": token,
         },
-        params: {
-          PostType: "Personal",
-        },
       })
       .then((res) => {
         console.log(res);
