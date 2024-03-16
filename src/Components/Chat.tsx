@@ -1,11 +1,10 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SendIcon from "@mui/icons-material/Send";
 import "./Chat.css";
-import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-const socket = io("http://localhost:3000");
+import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
 
 function Chat() {
   const { chatId } = useParams();
@@ -13,36 +12,54 @@ function Chat() {
   const [otherName, setOtherName] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
-  const sendMessage = () => {
-    console.log("Clicked send");
-    socket.emit("send_message", {
-      message: message,
-      chatId: chatId,
-      sender: userId,
-    });
-    setMessage("");
-    setMessages((prev) => [...prev, { message: message, sender: userId }]);
-  };
+  const [connection, setConnection] = useState<HubConnection | null>(null);
   const userId = localStorage.getItem("userId");
+
+  const sendMessage = async () => {
+    if (message == "") return;
+    console.log("Connection = ", connection);
+    console.log("ChatId = ", chatId);
+    console.log("Message = ", message);
+    console.log("UserId = ", userId);
+    console.log("Clicked send");
+    await connection?.invoke("SendMessage", chatId, message, userId); //message, chatId, sender
+    setMessage("");
+  };
+
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Connected");
-      socket.emit("join_room", { chatId: chatId });
-    });
-  }, []);
-  useEffect(() => {
-    socket.on("receive_message", (data: any) => {
-      console.log("Received message = ", data);
+    const connection = new HubConnectionBuilder()
+      .withUrl("http://localhost:3000/chatHub")
+      .withAutomaticReconnect()
+      .build();
+
+    connection.on("ReceiveMessage", (data) => {
+      console.log("Received message = ", message);
       setMessages((prev) => [
         ...prev,
         { message: data.message, sender: data.sender },
       ]);
     });
 
+    const startConnection = async () => {
+      try {
+        await connection.start();
+        await connection.invoke("JoinChat", chatId);
+        console.log("Connected to chatHub");
+        setConnection(connection);
+      } catch (error) {
+        console.log("Error connecting to chatHub = ", error);
+      }
+    };
+
+    startConnection();
+
     return () => {
-      socket.off("receive_message");
+      console.log("Stopping connection");
+      console.log("Connection = ", connection);
+      connection.stop();
     };
   }, []);
+
   useEffect(() => {
     axios
       .get(`http://localhost:3000/api/chat/getChatInfo/${chatId}`, {
