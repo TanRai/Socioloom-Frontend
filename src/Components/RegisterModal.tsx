@@ -4,7 +4,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext, useState } from "react";
-import axios from "axios";
+import API from "../services/axios";
 import { useNavigate } from "react-router-dom";
 import { LoggedContext } from "../App";
 
@@ -56,8 +56,7 @@ function Modal({ setOpenModal }: Props) {
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
   const registerUser = (data: FieldValues) => {
-    axios
-      .post("http://localhost:3000/api/auth/register", data)
+    API.post("/api/auth/register", data)
       .then((res) => {
         if (res.status === 200) {
           window.localStorage.setItem("token", res.data.token);

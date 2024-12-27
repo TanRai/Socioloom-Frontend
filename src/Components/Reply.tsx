@@ -4,7 +4,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import moment from "moment";
 import { Link, useLocation } from "react-router-dom";
-import axios from "axios";
+import API from "../services/axios";
 import { useState } from "react";
 moment.updateLocale("en", {
   relativeTime: {
@@ -51,25 +51,23 @@ function Reply({
   const dateTimeAgo = moment(timestamp).fromNow();
   let location = useLocation();
   const axiosReplyLikeLink = location.pathname.includes("/interests")
-    ? `http://localhost:3000/api/likes/reply/interests/${replyId}`
-    : `http://localhost:3000/api/likes/reply/personal/${replyId}`;
+    ? `/api/likes/reply/interests/${replyId}`
+    : `/api/likes/reply/personal/${replyId}`;
 
   const handleLike = (event: React.MouseEvent) => {
     event.preventDefault();
-    axios
-      .post(
-        axiosReplyLikeLink,
-        { like: !likeStatus },
-        {
-          headers: {
-            "x-auth-token": localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        setLikeStatus(!likeStatus);
-      });
+    API.post(
+      axiosReplyLikeLink,
+      { like: !likeStatus },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      }
+    ).then((res) => {
+      console.log(res);
+      setLikeStatus(!likeStatus);
+    });
   };
 
   return (

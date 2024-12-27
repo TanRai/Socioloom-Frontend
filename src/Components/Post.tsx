@@ -7,7 +7,7 @@ import PublishIcon from "@mui/icons-material/Publish";
 import moment from "moment";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
+import API from "../services/axios";
 moment.updateLocale("en", {
   relativeTime: {
     future: "in %s",
@@ -61,24 +61,22 @@ function Post({
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
   const axiosLikeLink = interest
-    ? `http://localhost:3000/api/likes/post/interests/${postId}`
-    : `http://localhost:3000/api/likes/post/personal/${postId}`;
+    ? `/api/likes/post/interests/${postId}`
+    : `/api/likes/post/personal/${postId}`;
   const handleLike = (event: React.MouseEvent) => {
     event.preventDefault();
-    axios
-      .post(
-        axiosLikeLink,
-        { like: !likeStatus },
-        {
-          headers: {
-            "x-auth-token": localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        setLikeStatus(!likeStatus);
-      });
+    API.post(
+      axiosLikeLink,
+      { like: !likeStatus },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      }
+    ).then((res) => {
+      console.log(res);
+      setLikeStatus(!likeStatus);
+    });
   };
 
   const to = interest

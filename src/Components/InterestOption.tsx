@@ -1,4 +1,4 @@
-import axios from "axios";
+import API from "../services/axios";
 import "./InterestOption.css";
 import { useState } from "react";
 
@@ -15,19 +15,17 @@ function interestOption({ id, subscribed, name }: Props) {
       <div className="interestOption__name">{name}</div>
       <button
         onClick={() => {
-          axios
-            .post(
-              `http://localhost:3000/api/interests/${id}`,
-              { subscribe: !sub },
-              {
-                headers: {
-                  "x-auth-token": localStorage.getItem("token"),
-                },
-              }
-            )
-            .then(() => {
-              setSub(!sub);
-            });
+          API.post(
+            `/api/interests/${id}`,
+            { subscribe: !sub },
+            {
+              headers: {
+                "x-auth-token": localStorage.getItem("token"),
+              },
+            }
+          ).then(() => {
+            setSub(!sub);
+          });
         }}
         className={
           sub ? "interestOption__button__followed" : "interestOption__button"

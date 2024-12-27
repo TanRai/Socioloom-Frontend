@@ -4,7 +4,7 @@ import Modal from "../Components/RegisterModal";
 import { useContext, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import API from "../services/axios";
 import { useNavigate } from "react-router-dom";
 import { LoggedContext } from "../App";
 
@@ -15,8 +15,7 @@ function LogReg() {
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
   const loginUser = (data: FieldValues) => {
-    axios
-      .post("http://localhost:3000/api/auth/login", data)
+    API.post("/api/auth/login", data)
       .then((res) => {
         if (res.status === 200) {
           window.localStorage.setItem("token", res.data.token);

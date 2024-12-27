@@ -3,7 +3,7 @@ import { Avatar } from "@mui/material";
 import CircularProgress from "./CircularProgress";
 import { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import axios from "axios";
+import API from "../services/axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface Props {
@@ -18,38 +18,34 @@ function ReplyBox({ postId, postType }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/user/${userId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        setProfilePicture(res.data.profilePicture);
-      });
+    API.get(`/api/user/${userId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      setProfilePicture(res.data.profilePicture);
+    });
   }, []);
   let location = useLocation();
   const axiosReplyLink = location.pathname.includes("/interests")
-    ? `http://localhost:3000/api/replies/interests/${postId}`
-    : `http://localhost:3000/api/replies/personal/${postId}`;
+    ? `/api/replies/interests/${postId}`
+    : `/api/replies/personal/${postId}`;
   const userId = localStorage.getItem("userId");
   const submitForm = (data: FieldValues) => {
     setIsSubmitting(true);
 
-    axios
-      .post(axiosReplyLink, data, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        setIsSubmitting(false);
-        setPercent(0);
-        setIsValid(false);
-        reset();
-        refreshPage();
-      });
+    API.post(axiosReplyLink, data, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      console.log(res);
+      setIsSubmitting(false);
+      setPercent(0);
+      setIsValid(false);
+      reset();
+      refreshPage();
+    });
   };
 
   const navigate = useNavigate();

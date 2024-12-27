@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API from "../services/axios";
 import axios from "axios";
 
 function useLoadPosts(pageNumber: number, postType: string, userId?: number) {
@@ -11,18 +12,17 @@ function useLoadPosts(pageNumber: number, postType: string, userId?: number) {
   const type = postType === "following" ? "personal" : postType;
 
   const url =
-    postType === "personal"
-      ? "http://localhost:3000/api/posts/personal/user"
-      : `http://localhost:3000/api/posts/${type}`;
+    postType === "personal" ? "/api/posts/personal/user" : `/api/posts/${type}`;
 
-  const params = "personal"
-    ? {
-        pageNumber: pageNumber,
-        userId: userId,
-      }
-    : {
-        pageNumber: pageNumber,
-      };
+  const params =
+    postType === "personal"
+      ? {
+          pageNumber: pageNumber,
+          userId: userId,
+        }
+      : {
+          pageNumber: pageNumber,
+        };
 
   // console.log("URL", url);
   // console.log("PARAMS", params);
@@ -34,14 +34,13 @@ function useLoadPosts(pageNumber: number, postType: string, userId?: number) {
     setLoading(true);
     setError(false);
     const cancelTokenSource = axios.CancelToken.source();
-    axios
-      .get(url, {
-        cancelToken: cancelTokenSource.token,
-        headers: {
-          "x-auth-token": token,
-        },
-        params: params,
-      })
+    API.get(url, {
+      cancelToken: cancelTokenSource.token,
+      headers: {
+        "x-auth-token": token,
+      },
+      params: params,
+    })
       .then((res) => {
         // console.log("RESPONSE HEADER", res.data);
         setPosts((prevPosts) => {

@@ -3,7 +3,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Post from "./Post";
 import { useCallback, useEffect, useRef, useState } from "react";
 import EditProfileModal from "./EditProfileModal";
-import axios from "axios";
+import API from "../services/axios";
 import userPlaceholder from "../assets/user.jpg";
 import useLoadPosts from "../Hooks/useLoadPosts";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -25,16 +25,14 @@ function Profile({ profileId }: Props) {
     coverPicture: "",
   });
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/follow/${profileId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setFollow(res.data.following);
-      });
+    API.get(`/api/follow/${profileId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      console.log(res.data);
+      setFollow(res.data.following);
+    });
   }, [profileId]);
   const { loading, error, posts, hasMore } = useLoadPosts(
     pageNumber,
@@ -61,21 +59,19 @@ function Profile({ profileId }: Props) {
     [loading, hasMore]
   );
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/user/${profileId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        setUser({
-          username: res.data.username,
-          displayName: res.data.displayName,
-          bio: res.data.bio,
-          profilePicture: res.data.profilePicture,
-          coverPicture: res.data.coverPicture,
-        });
+    API.get(`/api/user/${profileId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      setUser({
+        username: res.data.username,
+        displayName: res.data.displayName,
+        bio: res.data.bio,
+        profilePicture: res.data.profilePicture,
+        coverPicture: res.data.coverPicture,
       });
+    });
   }, []);
   const navigate = useNavigate();
 
@@ -127,19 +123,14 @@ function Profile({ profileId }: Props) {
               <div
                 onClick={() => {
                   console.log("clicked IN MESSAGE");
-                  axios
-                    .get(
-                      `http://localhost:3000/api/chat/getChatId/${profileId}`,
-                      {
-                        headers: {
-                          "x-auth-token": localStorage.getItem("token"),
-                        },
-                      }
-                    )
-                    .then((res) => {
-                      console.log(res.data);
-                      navigate("/chat/" + res.data.chatId);
-                    });
+                  API.get(`/api/chat/getChatId/${profileId}`, {
+                    headers: {
+                      "x-auth-token": localStorage.getItem("token"),
+                    },
+                  }).then((res) => {
+                    console.log(res.data);
+                    navigate("/chat/" + res.data.chatId);
+                  });
                 }}
                 className="profile__button__message"
               >
@@ -148,20 +139,18 @@ function Profile({ profileId }: Props) {
               <button
                 onClick={() => {
                   console.log("clicked IN FOLLOW");
-                  axios
-                    .post(
-                      `http://localhost:3000/api/follow/${profileId}`,
-                      { follow: !follow },
-                      {
-                        headers: {
-                          "x-auth-token": localStorage.getItem("token"),
-                        },
-                      }
-                    )
-                    .then((res) => {
-                      console.log(res);
-                      setFollow(!follow);
-                    });
+                  API.post(
+                    `/api/follow/${profileId}`,
+                    { follow: !follow },
+                    {
+                      headers: {
+                        "x-auth-token": localStorage.getItem("token"),
+                      },
+                    }
+                  ).then((res) => {
+                    console.log(res);
+                    setFollow(!follow);
+                  });
                 }}
                 className={
                   follow

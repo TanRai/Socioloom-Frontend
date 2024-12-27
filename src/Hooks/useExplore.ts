@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API from "../services/axios";
 import axios from "axios";
 
 function useExplore(pageNumber: number, contentType: string, search: string) {
@@ -8,7 +9,7 @@ function useExplore(pageNumber: number, contentType: string, search: string) {
   const [posts, setPosts] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(false);
 
-  let url = "http://localhost:3000/api/";
+  let url = "/api/";
   if (contentType === "personal") {
     url += "posts/personal";
   } else if (contentType === "interests") url += "posts/interests";
@@ -32,14 +33,13 @@ function useExplore(pageNumber: number, contentType: string, search: string) {
     setLoading(true);
     setError(false);
     const cancelTokenSource = axios.CancelToken.source();
-    axios
-      .get(url, {
-        cancelToken: cancelTokenSource.token,
-        headers: {
-          "x-auth-token": token,
-        },
-        params: params,
-      })
+    API.get(url, {
+      cancelToken: cancelTokenSource.token,
+      headers: {
+        "x-auth-token": token,
+      },
+      params: params,
+    })
       .then((res) => {
         // console.log("RESPONSE HEADER", res.data);
         setPosts((prevPosts) => {

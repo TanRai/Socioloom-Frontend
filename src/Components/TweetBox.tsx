@@ -5,7 +5,7 @@ import PhotoIcon from "@mui/icons-material/Photo";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "./CircularProgress";
 import { FieldValues, useForm } from "react-hook-form";
-import axios from "axios";
+import API from "../services/axios";
 import { useNavigate } from "react-router-dom";
 
 function TweetBox() {
@@ -44,34 +44,30 @@ function TweetBox() {
     for (let pair of formData.entries()) {
       console.log(pair[0] + ", " + pair[1]);
     }
-    axios
-      .post("http://localhost:3000/api/posts/personal", formData, {
-        headers: {
-          "x-auth-token": token,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        setCurrentImage(undefined);
-        setPreviewImage("");
-        setIsSubmitting(false);
-        setPercent(0);
-        setIsValid(false);
-        reset();
-        refreshPage();
-      });
+    API.post("/api/posts/personal", formData, {
+      headers: {
+        "x-auth-token": token,
+      },
+    }).then((res) => {
+      console.log(res);
+      setCurrentImage(undefined);
+      setPreviewImage("");
+      setIsSubmitting(false);
+      setPercent(0);
+      setIsValid(false);
+      reset();
+      refreshPage();
+    });
   };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/user/${userId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        setProfilePicture(res.data.profilePicture);
-      });
+    API.get(`/api/user/${userId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      setProfilePicture(res.data.profilePicture);
+    });
   }, []);
 
   return (

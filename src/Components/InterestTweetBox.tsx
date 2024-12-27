@@ -5,7 +5,7 @@ import PhotoIcon from "@mui/icons-material/Photo";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "./CircularProgress";
 import { FieldValues, useForm } from "react-hook-form";
-import axios from "axios";
+import API from "../services/axios";
 import { useNavigate } from "react-router-dom";
 
 function InterestTweetBox() {
@@ -19,15 +19,13 @@ function InterestTweetBox() {
   const [interests, setInterests] = useState<any[]>([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/interests", {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        setInterests(res.data);
-      });
+    API.get("/api/interests", {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      setInterests(res.data);
+    });
   }, []);
 
   const { register, handleSubmit, reset } = useForm();
@@ -58,36 +56,33 @@ function InterestTweetBox() {
     for (let pair of formData.entries()) {
       console.log(pair[0] + ", " + pair[1]);
     }
-    axios
-      .post("http://localhost:3000/api/posts/interests", formData, {
-        headers: {
-          "x-auth-token": token,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        setCurrentImage(undefined);
-        setPreviewImage("");
-        setIsSubmitting(false);
-        setPercent(0);
-        setIsValid(false);
-        reset();
-        refreshPage();
-      });
+    API.post("/api/posts/interests", formData, {
+      headers: {
+        "x-auth-token": token,
+      },
+    }).then((res) => {
+      console.log("Response from post");
+      console.log(res);
+      setCurrentImage(undefined);
+      setPreviewImage("");
+      setIsSubmitting(false);
+      setPercent(0);
+      setIsValid(false);
+      reset();
+      //refreshPage();
+    });
   };
 
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/user/${userId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        setProfilePicture(res.data.profilePicture);
-      });
+    API.get(`/api/user/${userId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      setProfilePicture(res.data.profilePicture);
+    });
   }, []);
 
   return (

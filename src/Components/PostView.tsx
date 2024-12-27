@@ -4,7 +4,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ReplyBox from "./ReplyBox";
 import Reply from "./Reply";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/axios";
 import { useLocation, useParams } from "react-router-dom";
 
 function PostView() {
@@ -15,36 +15,32 @@ function PostView() {
   const [post, setPost] = useState<any>({});
   const [replies, setReplies] = useState<any>([]);
   const axiosPostLink = location.pathname.includes("/interests")
-    ? `http://localhost:3000/api/posts/interests/${postId}`
-    : `http://localhost:3000/api/posts/personal/${postId}`;
+    ? `/api/posts/interests/${postId}`
+    : `/api/posts/personal/${postId}`;
 
   const axiosReplyLink = location.pathname.includes("/interests")
-    ? `http://localhost:3000/api/replies/interests/${postId}`
-    : `http://localhost:3000/api/replies/personal/${postId}`;
+    ? `/api/replies/interests/${postId}`
+    : `/api/replies/personal/${postId}`;
 
   useEffect(() => {
-    axios
-      .get(axiosPostLink, {
-        headers: {
-          "x-auth-token": token,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setPost(response.data);
-      });
+    API.get(axiosPostLink, {
+      headers: {
+        "x-auth-token": token,
+      },
+    }).then((response) => {
+      console.log(response.data);
+      setPost(response.data);
+    });
   }, []);
   useEffect(() => {
-    axios
-      .get(axiosReplyLink, {
-        headers: {
-          "x-auth-token": token,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setReplies(response.data);
-      });
+    API.get(axiosReplyLink, {
+      headers: {
+        "x-auth-token": token,
+      },
+    }).then((response) => {
+      console.log(response.data);
+      setReplies(response.data);
+    });
   }, []);
 
   return (

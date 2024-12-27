@@ -1,6 +1,6 @@
 import "./EditProfileModal.css";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import API from "../services/axios";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import { FieldValues, useForm } from "react-hook-form";
@@ -95,25 +95,23 @@ function Modal({
     for (let pair of formData.entries()) {
       console.log(pair[0] + ", " + pair[1]);
     }
-    axios
-      .put("http://localhost:3000/api/user", formData, {
-        headers: {
-          "x-auth-token": token,
-        },
-        params: {
-          PostType: "Personal",
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        setCurrentProfileImage(undefined);
-        setProfilePreviewImage("");
-        setCurrentCoverImage(undefined);
-        setCoverPreviewImage("");
-        setIsSubmitting(false);
-        setOpenModal(false);
-        refreshPage();
-      });
+    API.put("/api/user", formData, {
+      headers: {
+        "x-auth-token": token,
+      },
+      params: {
+        PostType: "Personal",
+      },
+    }).then((res) => {
+      console.log(res);
+      setCurrentProfileImage(undefined);
+      setProfilePreviewImage("");
+      setCurrentCoverImage(undefined);
+      setCoverPreviewImage("");
+      setIsSubmitting(false);
+      setOpenModal(false);
+      refreshPage();
+    });
   };
 
   return (

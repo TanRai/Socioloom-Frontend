@@ -2,17 +2,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import "./Messages.css";
 import MessagesCard from "./MessagesCard";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/axios";
 
 function Messages() {
   const [messages, setMessages] = useState<any[]>([]);
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/chat/chatList`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
+    API.get(`/api/chat/chatList`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    })
       .then((res) => {
         console.log("HERE_ + ", res.data);
         setMessages(res.data);

@@ -1,22 +1,19 @@
 import "./Widgets.css";
-import SearchIcon from "@mui/icons-material/Search";
 import InterestOption from "./InterestOption";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/axios";
 
 function Widgets() {
   const [interests, setInterests] = useState<any[]>([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/interests/user", {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        setInterests(res.data);
-      });
+    API.get("/api/interests/user", {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res: any) => {
+      setInterests(res.data);
+    });
   }, []);
 
   return (

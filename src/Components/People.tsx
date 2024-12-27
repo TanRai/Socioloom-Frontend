@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./People.css";
 import { Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/axios";
 interface Props {
   displayName: string;
   username: string;
@@ -22,16 +22,14 @@ function People({
 }: Props) {
   const [follow, setFollow] = useState(false);
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/follow/${profileId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setFollow(res.data.following);
-      });
+    API.get(`/api/follow/${profileId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      console.log(res.data);
+      setFollow(res.data.following);
+    });
   }, [profileId]);
 
   return (
@@ -53,20 +51,18 @@ function People({
             onClick={(e) => {
               e.preventDefault();
               console.log("clicked IN FOLLOW");
-              axios
-                .post(
-                  `http://localhost:3000/api/follow/${profileId}`,
-                  { follow: !follow },
-                  {
-                    headers: {
-                      "x-auth-token": localStorage.getItem("token"),
-                    },
-                  }
-                )
-                .then((res) => {
-                  console.log(res);
-                  setFollow(!follow);
-                });
+              API.post(
+                `/api/follow/${profileId}`,
+                { follow: !follow },
+                {
+                  headers: {
+                    "x-auth-token": localStorage.getItem("token"),
+                  },
+                }
+              ).then((res) => {
+                console.log(res);
+                setFollow(!follow);
+              });
             }}
             className={follow ? "people__followed" : "people__follow"}
           >

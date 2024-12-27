@@ -4,8 +4,10 @@ import "./Chat.css";
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-const socket = io("http://localhost:3000");
+import API from "../services/axios";
+const socket = io("http://103.119.100.243:3000");
+
+console.log(API);
 
 function Chat() {
   const { chatId } = useParams();
@@ -44,37 +46,33 @@ function Chat() {
     };
   }, []);
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/chat/getChatInfo/${chatId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.user_1 == userId) {
-          setMyName(res.data.disp1);
-          setOtherName(res.data.disp2);
-        } else {
-          setMyName(res.data.disp2);
-          setOtherName(res.data.disp1);
-        }
-      });
+    API.get(`/api/chat/getChatInfo/${chatId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      console.log(res.data);
+      if (res.data.user_1 == userId) {
+        setMyName(res.data.disp1);
+        setOtherName(res.data.disp2);
+      } else {
+        setMyName(res.data.disp2);
+        setOtherName(res.data.disp1);
+      }
+    });
   }, []);
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/chat/${chatId}`, {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res: any) => {
-        console.log("GET MESSAGES = ", res.data);
-        const arr = res.data.map((message: any) => {
-          return { message: message.message_text, sender: message.sender };
-        });
-        setMessages(arr);
+    API.get(`/api/chat/${chatId}`, {
+      headers: {
+        "x-auth-token": localStorage.getItem("token"),
+      },
+    }).then((res: any) => {
+      console.log("GET MESSAGES = ", res.data);
+      const arr = res.data.map((message: any) => {
+        return { message: message.message_text, sender: message.sender };
       });
+      setMessages(arr);
+    });
   }, []);
 
   return (

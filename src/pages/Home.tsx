@@ -9,7 +9,6 @@ import { useLocation, useParams } from "react-router-dom";
 import Messages from "../Components/Messages";
 import Chat from "../Components/Chat";
 import PostView from "../Components/PostView";
-import Notifications from "../Components/Notifications";
 
 interface Props {
   urlPath?: string;
@@ -51,7 +50,6 @@ function Home({ urlPath }: Props) {
       {path === "explore" && <Explore />}
       {path === "messages" && <Messages />}
       {path === "chat" && <Chat />}
-      {path === "notifications" && <Notifications />}
       {path === "post" && <PostView />}
       <Widgets />
     </div>
