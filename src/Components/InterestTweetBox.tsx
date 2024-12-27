@@ -48,6 +48,11 @@ function InterestTweetBox() {
     console.log("PostText", data.PostText);
     console.log("Interest", data.interest);
     const token = localStorage.getItem("token");
+
+    if (data.interest === null || data.interest === undefined) {
+      data.interest = 1;
+    }
+
     const formData = new FormData();
 
     formData.append("PostPicture", currentImage as File);
@@ -69,7 +74,7 @@ function InterestTweetBox() {
       setPercent(0);
       setIsValid(false);
       reset();
-      //refreshPage();
+      refreshPage();
     });
   };
 

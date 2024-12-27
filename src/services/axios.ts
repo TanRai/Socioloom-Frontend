@@ -1,10 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://103.119.100.243:3000", // Default to localhost for development
+  baseURL: process.env.VITE_REACT_APP_API_URL || "http://localhost:3000", // Fallback to localhost
   withCredentials: true, // Include credentials if needed
 });
-
-console.log("API URL: ", API.defaults.baseURL);
 
 export default API;

@@ -5,7 +5,9 @@ import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import API from "../services/axios";
-const socket = io("http://103.119.100.243:3000");
+const socket = io(
+  process.env.VITE_REACT_APP_API_URL || "http://localhost:3000"
+);
 
 console.log(API);
 
